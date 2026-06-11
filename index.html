@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vinyans WhatsApp Bot Preview</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="phone" aria-label="Vinyans WhatsApp bot preview">
+        <header class="chat-header">
+          <div class="avatar">V</div>
+          <div>
+            <h1>Vinyans India</h1>
+            <p>WhatsApp bot preview</p>
+          </div>
+        </header>
+
+        <div id="chat" class="chat" aria-live="polite"></div>
+
+        <form id="composer" class="composer">
+          <input
+            id="messageInput"
+            autocomplete="off"
+            placeholder='Type "MENU" anytime'
+            aria-label="Message"
+          />
+          <button type="submit">Send</button>
+        </form>
+      </section>
+
+      <aside class="notes">
+        <h2>Preview Rules</h2>
+        <p>
+          This is a local mock of the option flow. It does not connect to WhatsApp Business API
+          and does not store leads.
+        </p>
+        <p>
+          In production, the same flow would run behind a webhook, receive WhatsApp messages from
+          Meta, and send replies through the WhatsApp Cloud API.
+        </p>
+      </aside>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
