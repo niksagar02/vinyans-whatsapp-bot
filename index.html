@@ -57,7 +57,73 @@
 
     <script src="./script.js"></script>
 
+    <!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vinyans WhatsApp Bot Preview</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+
+  <body>
+    <main class="shell">
+      <section class="phone" aria-label="Vinyans WhatsApp bot preview">
+        <header class="chat-header">
+          <div class="avatar">V</div>
+          <div>
+            <h1>Vinyans India</h1>
+            <p>WhatsApp bot preview</p>
+          </div>
+        </header>
+
+        <div id="chat" class="chat" aria-live="polite"></div>
+
+        <form id="composer" class="composer">
+          <input
+            id="messageInput"
+            autocomplete="off"
+            placeholder='Type "MENU" anytime'
+            aria-label="Message"
+          />
+          <button type="submit">Send</button>
+        </form>
+      </section>
+
+      <aside class="notes">
+        <h2>Preview Rules</h2>
+        <p>
+          This is a local mock of the option flow. It does not connect to WhatsApp Business API
+          and does not store leads.
+        </p>
+        <p>
+          In production, the same flow would run behind a webhook, receive WhatsApp messages from
+          Meta, and send replies through the WhatsApp Cloud API.
+        </p>
+
+        <hr />
+
+        <h2>WhatsApp Coexistence Setup</h2>
+        <p>
+          Use this button to start Meta Embedded Signup for connecting the existing WhatsApp
+          Business app number with Cloud API.
+        </p>
+
+        <button
+          onclick="launchWhatsAppSignup()"
+          style="padding: 12px 16px; border: 0; border-radius: 8px; cursor: pointer;"
+        >
+          Connect Vinyans WhatsApp
+        </button>
+      </aside>
+    </main>
+
+    <script src="./script.js"></script>
+
     <script>
+      let whatsappSignupData = null;
+      let facebookAuthCode = null;
+
       window.fbAsyncInit = function () {
         FB.init({
           appId: "1960326944643496",
@@ -76,13 +142,48 @@
         fjs.parentNode.insertBefore(js, fjs);
       })(document, "script", "facebook-jssdk");
 
+      window.addEventListener("message", function (event) {
+        if (
+          event.origin !== "https://www.facebook.com" &&
+          event.origin !== "https://web.facebook.com"
+        ) {
+          return;
+        }
+
+        try {
+          const data = JSON.parse(event.data);
+
+          if (data.type === "WA_EMBEDDED_SIGNUP") {
+            console.log("WhatsApp signup event:", data);
+
+            if (data.event === "FINISH") {
+              whatsappSignupData = data.data;
+
+              alert(
+                "WhatsApp Signup Finished!\n\n" +
+                  "WABA ID: " +
+                  (data.data.waba_id || "Not received") +
+                  "\n" +
+                  "Phone Number ID: " +
+                  (data.data.phone_number_id || "Not received")
+              );
+            } else {
+              alert("WhatsApp signup event: " + data.event);
+            }
+          }
+        } catch (error) {
+          console.log("Non-JSON message:", event.data);
+        }
+      });
+
       function launchWhatsAppSignup() {
         FB.login(
           function (response) {
-            console.log("WhatsApp Embedded Signup response:", response);
+            console.log("Facebook login response:", response);
 
             if (response.authResponse) {
-              alert("Signup flow completed or authorization received. Send the next screenshot.");
+              facebookAuthCode = response.authResponse.code;
+              console.log("Authorization code:", facebookAuthCode);
             } else {
               alert("Signup was cancelled or not completed.");
             }
@@ -92,12 +193,15 @@
             response_type: "code",
             override_default_response_type: true,
             extras: {
+              setup: {},
+              feature: "whatsapp_embedded_signup",
               featureType: "whatsapp_business_app_onboarding",
-              sessionInfoVersion: 3
+              sessionInfoVersion: "3"
             }
           }
         );
       }
     </script>
   </body>
+</html>  </body>
 </html>
