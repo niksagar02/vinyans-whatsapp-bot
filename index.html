@@ -40,9 +40,64 @@
           In production, the same flow would run behind a webhook, receive WhatsApp messages from
           Meta, and send replies through the WhatsApp Cloud API.
         </p>
+
+        <hr />
+
+        <h2>WhatsApp Coexistence Setup</h2>
+        <p>
+          Use this button to start Meta Embedded Signup for connecting the existing WhatsApp
+          Business app number with Cloud API.
+        </p>
+
+        <button onclick="launchWhatsAppSignup()" style="padding: 12px 16px; border: 0; border-radius: 8px; cursor: pointer;">
+          Connect Vinyans WhatsApp
+        </button>
       </aside>
     </main>
 
     <script src="./script.js"></script>
+
+    <script>
+      window.fbAsyncInit = function () {
+        FB.init({
+          appId: "1960326944643496",
+          cookie: true,
+          xfbml: true,
+          version: "v25.0"
+        });
+      };
+
+      (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      })(document, "script", "facebook-jssdk");
+
+      function launchWhatsAppSignup() {
+        FB.login(
+          function (response) {
+            console.log("WhatsApp Embedded Signup response:", response);
+
+            if (response.authResponse) {
+              alert("Signup flow completed or authorization received. Send the next screenshot.");
+            } else {
+              alert("Signup was cancelled or not completed.");
+            }
+          },
+          {
+            config_id: "2216072599159641",
+            response_type: "code",
+            override_default_response_type: true,
+            extras: {
+              featureType: "whatsapp_business_app_onboarding",
+              sessionInfoVersion: 3
+            }
+          }
+        );
+      }
+    </script>
   </body>
 </html>
